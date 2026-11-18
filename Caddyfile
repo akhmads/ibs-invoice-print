@@ -1,0 +1,20 @@
+# Pilih SALAH SATU blok di bawah.
+
+# --- A. Akses via IP / jaringan internal (tanpa domain, HTTP biasa) ---
+:80 {
+	encode gzip
+	reverse_proxy 127.0.0.1:3000
+
+	# Opsional: proteksi password sederhana.
+	# Buat hash: caddy hash-password --plaintext "passwordAnda"
+	# basic_auth {
+	# 	admin <hash-dari-perintah-di-atas>
+	# }
+}
+
+# --- B. Pakai domain publik (HTTPS otomatis Let's Encrypt) ---
+# Syarat: DNS domain mengarah ke server, port 80 & 443 terbuka.
+# invoice.domainanda.com {
+# 	encode gzip
+# 	reverse_proxy 127.0.0.1:3000
+# }

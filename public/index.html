@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cetak Invoice</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="topbar">
+  <div>
+    <h1>Cetak Invoice</h1>
+    <p>PT. Inti Bangun Selaras &middot; IBSFin</p>
+  </div>
+</header>
+
+<main>
+  <form id="filter" class="filter" autocomplete="off">
+    <label class="grow">
+      <span>Cari</span>
+      <input type="search" name="q" placeholder="No. invoice atau description (AWB, AJU, ...)">
+    </label>
+    <label>
+      <span>Jenis</span>
+      <select name="type">
+        <option value="">Semua</option>
+        <option value="Freight">Freight (tanpa B)</option>
+        <option value="Handling">Handling (akhiran B)</option>
+      </select>
+    </label>
+    <label>
+      <span>Tgl invoice dari</span>
+      <input type="date" name="from">
+    </label>
+    <label>
+      <span>sampai</span>
+      <input type="date" name="to">
+    </label>
+    <label>
+      <span>Per halaman</span>
+      <select name="size">
+        <option>25</option><option selected>50</option><option>100</option><option>200</option>
+      </select>
+    </label>
+    <div class="filter-actions">
+      <button type="submit" class="btn primary">Cari</button>
+      <button type="reset" class="btn">Reset</button>
+    </div>
+  </form>
+
+  <div class="actions">
+    <div class="sel-info">
+      <span id="selCount">0</span> invoice dipilih
+      <button type="button" id="clearSel" class="link" hidden>bersihkan</button>
+    </div>
+    <div class="actions-right">
+      <button type="button" id="printSelected" class="btn primary" disabled>Print terpilih</button>
+      <button type="button" id="printAll" class="btn" disabled>Print semua hasil filter</button>
+    </div>
+  </div>
+
+  <div class="table-wrap">
+    <table class="list">
+      <thead>
+        <tr>
+          <th class="col-check"><input type="checkbox" id="checkPage" title="Pilih semua di halaman ini"></th>
+          <th>No. Invoice</th>
+          <th>Jenis</th>
+          <th>Tgl Invoice</th>
+          <th>Jatuh Tempo</th>
+          <th>Description</th>
+          <th class="num">Item</th>
+          <th class="num">DPP</th>
+          <th class="num">Total Invoice</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="rows">
+        <tr><td colspan="10" class="state">Memuat data&hellip;</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <nav class="pager">
+    <span id="pageInfo"></span>
+    <div>
+      <button type="button" id="prev" class="btn" disabled>&larr; Sebelumnya</button>
+      <span id="pageNo"></span>
+      <button type="button" id="next" class="btn" disabled>Berikutnya &rarr;</button>
+    </div>
+  </nav>
+</main>
+
+<script src="app.js"></script>
+</body>
+</html>

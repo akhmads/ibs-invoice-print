@@ -1,0 +1,157 @@
+/* Layout cetak invoice A4. Ukuran dalam mm, disalin dari proporsi contoh PDF.
+   Lebar area isi = 210 - 15 (kiri) - 12 (kanan) = 183mm. */
+
+@page { size: A4 portrait; margin: 0; }
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: #d9dce1;
+  color: #000;
+  font-family: Arial, "Liberation Sans", Helvetica, sans-serif;
+  font-size: 9.8pt;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+.b { font-weight: bold; }
+
+/* ---------- toolbar (layar saja) ---------- */
+.toolbar {
+  position: sticky; top: 0; z-index: 10;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 10px 16px; background: #1f2937; color: #f9fafb;
+  font: 14px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+.toolbar-actions { display: flex; gap: 8px; }
+.toolbar button {
+  font: inherit; font-weight: 600; padding: 6px 16px; border-radius: 6px; cursor: pointer;
+  border: 1px solid #3b82f6; background: #3b82f6; color: #fff;
+}
+.toolbar button.ghost { background: transparent; border-color: #6b7280; color: #e5e7eb; }
+.toolbar .warn { margin-left: 12px; color: #fca5a5; }
+.empty { text-align: center; font: 16px system-ui, sans-serif; padding: 40px; }
+
+/* ---------- halaman ---------- */
+.sheet {
+  position: relative;
+  width: 210mm; height: 297mm;
+  margin: 8mm auto;
+  padding: 13mm 12mm 0 15mm;
+  background: #fff;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, .25);
+  overflow: hidden;
+}
+.box { border: 1px solid #000; }
+
+/* ---------- kop ---------- */
+.head { position: relative; height: 22.7mm; }
+.co { display: flex; align-items: flex-start; }
+.co-logo { width: 14.5mm; margin: 0.4mm 1.9mm 0 -1mm; }
+.co-text { font-size: 10pt; line-height: 4mm; }
+.co-name { font-size: 9.6pt; font-weight: bold; }
+
+.title { position: absolute; top: 0; right: 0; width: 60.8mm; }
+.title-word {
+  margin-top: 4.6mm; padding-right: 11mm; padding-bottom: 0.6mm;
+  text-align: right; font-size: 14.5pt; font-weight: bold; line-height: 1.2;
+  border-bottom: 1px solid #000;
+}
+.title-no { margin: 1.1mm 0 0 1.2mm; font-size: 10.5pt; }
+.title-no .lbl { margin-right: 1mm; }
+.title-page { margin-top: 1.6mm; text-align: right; font-size: 7pt; }
+
+/* ---------- bill to / tanggal / deskripsi ---------- */
+.mid { display: flex; justify-content: space-between; height: 29.2mm; }
+.billto {
+  width: 102.6mm; display: flex; flex-direction: column;
+  padding: 1.3mm 1.2mm 1.2mm; line-height: 3.7mm;
+}
+.billto .b { font-size: 9.6pt; }
+.cust-name { margin-top: 0.6mm; font-size: 9.8pt; }
+.cust-addr { font-size: 8.8pt; line-height: 3.6mm; }
+.cust-npwp { margin-top: auto; font-size: 9.8pt; }
+
+.mid-right { width: 78.8mm; display: flex; flex-direction: column; }
+.dates { display: flex; justify-content: space-between; }
+.date { width: 38.7mm; text-align: center; }
+.dh { height: 5mm; line-height: 5mm; font-weight: bold; border-bottom: 1px solid #000; }
+.dv { height: 5mm; line-height: 5mm; font-size: 10pt; }
+.desc { flex: 1; margin-top: 1.3mm; padding: 1mm 1.4mm; line-height: 3.9mm; }
+.desc-text { word-break: break-word; }
+
+/* ---------- tabel item ---------- */
+.items {
+  width: 183mm; margin-top: 1.5mm;
+  border-collapse: collapse; table-layout: fixed;
+  border: 1px solid #000;
+}
+.w-no { width: 7.8mm; } .w-desc { width: 66.6mm; } .w-qty { width: 17.7mm; }
+.w-unit { width: 11mm; } .w-price { width: 40.6mm; } .w-amt { width: 39.3mm; }
+.items th {
+  height: 6.4mm; padding: 0 1mm; font-weight: bold; text-align: center;
+  border: 1px solid #000;
+}
+.items td {
+  height: 5.6mm; padding: 0 0.9mm; white-space: nowrap; overflow: hidden;
+  border-left: 1px solid #000; border-right: 1px solid #000;
+}
+.items tbody tr:first-child td { padding-top: 0.4mm; }
+.items tbody tr:last-child td { padding-bottom: 0.4mm; }
+.c-no, .c-qty { text-align: right; }
+.c-desc { padding-left: 2mm !important; }
+.c-price, .c-amt { text-align: right; padding-right: 1.6mm !important; }
+.continued { margin-top: 3mm; text-align: right; font-style: italic; font-size: 9pt; }
+
+/* ---------- bagian bawah (posisi absolut seperti form cetak) ---------- */
+.bottom { position: relative; height: 75mm; }
+.bottom > * { position: absolute; }
+
+.says { top: 1.2mm; left: 0.3mm; width: 101mm; display: grid; grid-template-columns: 11.4mm 1fr; }
+.says .b { font-size: 9.6pt; }
+.says-text { font-size: 9pt; line-height: 3.7mm; }
+
+.sign { top: 13.3mm; width: 29mm; height: 18.3mm; text-align: center; font-size: 9.6pt; }
+.sign-1 { left: 4.7mm; }
+.sign-2 { left: 66.9mm; width: 28.7mm; }
+.sign-line { position: absolute; left: 0; right: 0; bottom: 0; border-top: 1px solid #000; }
+
+.copy { top: 38mm; font-size: 8.6pt; }
+.copy-1 { left: 4.7mm; } .copy-2 { left: 38.9mm; } .copy-3 { left: 75.8mm; }
+
+.qr { top: 45mm; left: 7.8mm; width: 15.7mm; height: 15.7mm; }
+.qr svg { display: block; width: 100%; height: 100%; }
+
+.totals {
+  top: 0; left: 103.1mm; width: 79.9mm; height: 27.6mm;
+  display: grid; grid-template-columns: 40.6mm 1fr; align-content: start;
+  padding-top: 1mm; line-height: 4.85mm; font-size: 10pt;
+  border: 1px solid #000; border-top: 0;
+}
+.totals::after {
+  content: ""; position: absolute; top: 0; bottom: 0; left: calc(40.6mm - 1px);
+  border-left: 1px solid #000;
+}
+.t-lbl { text-align: right; padding-right: 2.4mm; font-weight: bold; }
+.t-val { text-align: right; padding-right: 2.4mm; }
+.t-grand { margin-top: 1.4mm; }
+
+.pay { top: 29.1mm; left: 103.1mm; width: 79.1mm; height: 21.9mm; padding: 1.5mm 2mm; font-size: 9.6pt; }
+.pay-lines { margin-top: 1.4mm; font-weight: bold; line-height: 3.9mm; }
+
+.note {
+  top: 53.4mm; left: 66.6mm; width: 114mm;
+  display: grid; grid-template-columns: auto 1fr; column-gap: 1mm;
+  font-size: 9pt; line-height: 3.65mm;
+}
+
+/* ---------- mode cetak ---------- */
+@media print {
+  body { background: none; }
+  .toolbar { display: none; }
+  .sheet {
+    margin: 0; box-shadow: none;
+    height: 296mm; /* sedikit < 297mm agar tidak muncul halaman kosong */
+    break-after: page;
+  }
+  .sheet:last-of-type { break-after: auto; }
+}

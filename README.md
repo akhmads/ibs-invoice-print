@@ -1,0 +1,87 @@
+# Invoice Print
+
+Aplikasi sederhana Node.js untuk menampilkan daftar invoice dari database **IBSFin**
+(SQL Server) dan mencetaknya sesuai format invoice PT. Inti Bangun Selaras, satuan maupun bulk.
+
+- Daftar invoice dengan pencarian (no. invoice / description), filter jenis (Freight / Handling), filter tanggal, dan paging.
+- Cetak satu invoice (tombol **Print** per baris).
+- Cetak bulk: centang beberapa invoice (bisa lintas halaman) lalu **Print terpilih**,
+  atau **Print semua hasil filter**.
+- Hasil cetak berukuran A4, 1 invoice per halaman. Bisa langsung ke printer atau
+  *Save as PDF* dari dialog print browser.
+
+## Cara kerja data
+
+| Hal | Aturan |
+|---|---|
+| 1 invoice cetak | 1 baris `InvoiceHd` |
+| Jenis | **Freight** = nomor tanpa akhiran B (`CC25020000045`), **Handling** = nomor berakhiran B (`CC25020000045B`) |
+| Item | `InvoiceDt` dengan `NoInv` yang sama persis, urut nominal terkecil dulu |
+| DPP | Jumlah `Amount` |
+| VAT | DPP x 1.1% |
+| Stamp | Rp10.000 jika DPP + VAT > Rp5.000.000 |
+| QR code | Berisi nomor invoice |
+| Bill To, alamat, bank, catatan | Diambil dari `config/company.js` (tidak ada di database) |
+
+Semua query kompatibel dengan **SQL Server 2016** (tidak memakai STRING_AGG, GREATEST, dsb).
+
+## Struktur
+
+```
+config/company.js   data tetap invoice (kop, Bill To, bank, catatan, tarif VAT, meterai)
+src/server.js       web server Express + route
+src/invoices.js     query SQL Server
+src/render.js       template HTML cetak
+src/calc.js         perhitungan total, format angka & tanggal, terbilang
+public/             halaman daftar (index.html, app.js, style.css), print.css, logo
+Caddyfile           contoh reverse proxy
+```
+
+## Menjalankan di lokal
+
+Butuh Node.js 20.12+ (disarankan 22 LTS).
+
+```bash
+npm install
+cp .env.example .env      # isi koneksi database
+npm run dev               # auto-restart saat file berubah
+```
+
+Buka http://localhost:3000
+
+## Deploy di Windows Server 2022
+
+1. Install **Node.js LTS** (.msi) dan download **Caddy** (`caddy_windows_amd64.exe`) ke `C:\caddy\caddy.exe`.
+2. Salin folder ini ke mis. `C:\apps\invoice-print`, lalu di PowerShell:
+   ```powershell
+   cd C:\apps\invoice-print
+   npm ci --omit=dev
+   copy .env.example .env    # lalu edit .env
+   ```
+3. Jalankan aplikasi sebagai Windows service dengan [NSSM](https://nssm.cc):
+   ```powershell
+   nssm install invoice-print "C:\Program Files\nodejs\node.exe" "src\server.js"
+   nssm set invoice-print AppDirectory C:\apps\invoice-print
+   nssm start invoice-print
+   ```
+4. Salin `Caddyfile` ke `C:\caddy\Caddyfile`, pilih blok A atau B, lalu daftarkan Caddy:
+   ```powershell
+   sc.exe create caddy start= auto binPath= "C:\caddy\caddy.exe run --config C:\caddy\Caddyfile"
+   sc.exe start caddy
+   New-NetFirewallRule -DisplayName "Web 80/443" -Direction Inbound -Protocol TCP -LocalPort 80,443 -Action Allow
+   ```
+   Jika port 80 sudah dipakai IIS, hentikan service *World Wide Web Publishing Service* (W3SVC).
+
+## Tips mencetak
+
+- Gunakan Chrome atau Edge. Pada dialog print: kertas **A4**, skala **100%** (Default).
+- Header/footer browser (URL, tanggal) otomatis hilang karena margin halaman diatur 0.
+- Maksimal 1000 invoice per sekali cetak (bisa diubah di `config/company.js` → `maxPrint`).
+
+## Yang perlu disesuaikan
+
+- `public/img/logo.png` masih hasil potongan dari scan. Ganti dengan file logo asli.
+- Bill To saat ini satu customer tetap (PT. PANCA CITRA ABADI). Kalau customer berbeda per
+  invoice, data customer perlu diambil dari tabel lain di database.
+- Ada 25 nomor `...B` di `InvoiceDt` yang tidak punya header di `InvoiceHd`
+  (mis. `CC25020000047B`), sehingga tidak muncul di daftar.
