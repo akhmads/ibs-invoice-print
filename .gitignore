@@ -1,3 +1,6 @@
 node_modules/
 .env
 *.log
+
+# WinSW service wrapper (diunduh terpisah, lihat README)
+invoice-print-service.exe

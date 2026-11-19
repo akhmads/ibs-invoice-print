@@ -58,12 +58,18 @@ Buka http://localhost:3000
    npm ci --omit=dev
    copy .env.example .env    # lalu edit .env
    ```
-3. Jalankan aplikasi sebagai Windows service dengan [NSSM](https://nssm.cc):
+3. Jalankan aplikasi sebagai Windows service dengan [WinSW](https://github.com/winsw/winsw)
+   (konfigurasi sudah ada di `invoice-print-service.xml`). PowerShell **as Administrator**:
    ```powershell
-   nssm install invoice-print "C:\Program Files\nodejs\node.exe" "src\server.js"
-   nssm set invoice-print AppDirectory C:\apps\invoice-print
-   nssm start invoice-print
+   cd C:\apps\invoice-print
+   Invoke-WebRequest https://github.com/winsw/winsw/releases/download/v2.12.0/WinSW-x64.exe -OutFile invoice-print-service.exe
+   .\invoice-print-service.exe install
+   .\invoice-print-service.exe start
+   .\invoice-print-service.exe status     # harus "Started"
    ```
+   Service muncul di `services.msc` dengan nama **Invoice Print**, otomatis jalan saat
+   server boot dan restart sendiri jika crash. Log ada di `invoice-print-service.out.log`
+   dan `.err.log`. Setelah update kode (`git pull`), jalankan `.\invoice-print-service.exe restart`.
 4. Salin `Caddyfile` ke `C:\caddy\Caddyfile`, pilih blok A atau B, lalu daftarkan Caddy:
    ```powershell
    sc.exe create caddy start= auto binPath= "C:\caddy\caddy.exe run --config C:\caddy\Caddyfile"

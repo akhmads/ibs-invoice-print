@@ -1,0 +1,27 @@
+<!--
+  Konfigurasi Windows service untuk WinSW (https://github.com/winsw/winsw).
+  Letakkan WinSW-x64.exe di folder ini dengan nama invoice-print-service.exe
+  (nama .exe harus sama dengan nama file .xml ini), lalu jalankan sebagai Administrator:
+    .\invoice-print-service.exe install
+    .\invoice-print-service.exe start
+  %BASE% = folder tempat .exe ini berada (root proyek).
+-->
+<service>
+  <id>invoice-print</id>
+  <name>Invoice Print</name>
+  <description>Aplikasi daftar &amp; cetak invoice IBSFin (Node.js)</description>
+
+  <executable>C:\Program Files\nodejs\node.exe</executable>
+  <arguments>src\server.js</arguments>
+  <workingdirectory>%BASE%</workingdirectory>
+  <env name="NODE_ENV" value="production" />
+
+  <startmode>Automatic</startmode>
+  <onfailure action="restart" delay="10 sec" />
+
+  <!-- Log stdout/stderr di folder ini: invoice-print-service.out.log / .err.log -->
+  <log mode="roll-by-size">
+    <sizeThreshold>10240</sizeThreshold>
+    <keepFiles>8</keepFiles>
+  </log>
+</service>
