@@ -49,7 +49,29 @@ npm run dev               # auto-restart saat file berubah
 
 Buka http://localhost:3000
 
-## Deploy di Windows Server 2022
+## Deploy di Windows Server 2022 (cara paling mudah)
+
+Buat paket siap pakai di komputer development (butuh internet, sekali saja):
+
+```bash
+npm install
+npm run build:windows      # hasil: dist/invoice-print-windows.zip (~66 MB)
+```
+
+Zip berisi `node.exe` portable, aplikasi dalam 1 file, Caddy, WinSW, dan skrip install.
+Di server **tidak perlu** install Node.js, npm, maupun internet:
+
+1. Salin zip ke server, ekstrak ke `C:\apps` (hasilnya `C:\apps\invoice-print`).
+2. Klik kanan `install.bat` → *Run as administrator*.
+3. Isi `.env` di Notepad yang terbuka, simpan, tutup.
+4. Tunggu sampai muncul **SELESAI**, lalu buka `http://<IP-server>:3003`.
+
+`install.bat` mengecek koneksi database dan port web (dibaca dari `Caddyfile`, default 3003), memasang 2 Windows service
+(*Invoice Print* dan *Invoice Print (Caddy)*), membuka firewall, lalu memastikan
+halaman bisa dibuka. Aman dijalankan ulang. Petunjuk lengkap ada di `BACA-SAYA.txt`
+di dalam zip; template skripnya ada di `deploy/windows/`.
+
+## Deploy di Windows Server 2022 (manual)
 
 1. Install **Node.js LTS** (.msi). Caddy v2.11.9 sudah tersedia di `deploy\caddy.exe`;
    salin ke `C:\caddy\caddy.exe`.
@@ -75,9 +97,12 @@ Buka http://localhost:3000
    ```powershell
    sc.exe create caddy start= auto binPath= "C:\caddy\caddy.exe run --config C:\caddy\Caddyfile"
    sc.exe start caddy
-   New-NetFirewallRule -DisplayName "Web 80/443" -Direction Inbound -Protocol TCP -LocalPort 80,443 -Action Allow
+   # Blok A (port 3003):
+   New-NetFirewallRule -DisplayName "Invoice Print 3003" -Direction Inbound -Protocol TCP -LocalPort 3003 -Action Allow
+   # Blok B (domain + HTTPS) butuh port 80 dan 443:
+   # New-NetFirewallRule -DisplayName "Web 80/443" -Direction Inbound -Protocol TCP -LocalPort 80,443 -Action Allow
    ```
-   Jika port 80 sudah dipakai IIS, hentikan service *World Wide Web Publishing Service* (W3SVC).
+   Jika port yang dipilih sudah dipakai program lain (mis. IIS di port 80), ganti port di Caddyfile.
 
 ## Tips mencetak
 

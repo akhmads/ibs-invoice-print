@@ -1,0 +1,13 @@
+# Akses dari jaringan lewat http://<IP-server>:3003
+# Port bisa diganti di baris ":3003 {" di bawah; install.bat membacanya otomatis
+# (lalu jalankan install.bat lagi).
+:3003 {
+	encode gzip
+	reverse_proxy 127.0.0.1:3000
+
+	# Opsional: proteksi password.
+	# Buat hash: caddy.exe hash-password --plaintext "passwordAnda"
+	# basic_auth {
+	# 	admin <hash>
+	# }
+}

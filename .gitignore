@@ -7,3 +7,7 @@ invoice-print-service.exe
 
 # Arsip unduhan (yang di-commit hanya hasil ekstraknya)
 deploy/*.zip
+
+# Hasil build & cache unduhan paket Windows
+dist/
+.cache/

@@ -1,0 +1,19 @@
+<service>
+  <id>invoice-print</id>
+  <name>Invoice Print</name>
+  <description>Aplikasi daftar &amp; cetak invoice IBSFin (Node.js)</description>
+
+  <executable>%BASE%\node.exe</executable>
+  <arguments>"%BASE%\src\server.js"</arguments>
+  <workingdirectory>%BASE%</workingdirectory>
+  <env name="NODE_ENV" value="production" />
+
+  <startmode>Automatic</startmode>
+  <onfailure action="restart" delay="10 sec" />
+
+  <logpath>%BASE%\logs</logpath>
+  <log mode="roll-by-size">
+    <sizeThreshold>10240</sizeThreshold>
+    <keepFiles>8</keepFiles>
+  </log>
+</service>

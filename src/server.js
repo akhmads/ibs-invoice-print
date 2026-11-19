@@ -1,7 +1,7 @@
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import express from 'express';
-import cfg from '../config/company.js';
+import { getPool } from './db.js';
 import { getInvoicesForPrint, listInvoiceNos, listInvoices } from './invoices.js';
 import { renderPrintPage } from './render.js';
 
@@ -10,6 +10,22 @@ try {
   process.loadEnvFile(path.join(root, '.env'));
 } catch (err) {
   if (err.code !== 'ENOENT') throw err;
+}
+
+// Dibaca saat runtime (tidak ikut di-bundle) supaya config/company.js tetap bisa diedit di server
+const cfg = (await import(pathToFileURL(path.join(root, 'config', 'company.js')).href)).default;
+
+// `node src/server.js --check-db` : tes koneksi database lalu keluar
+if (process.argv.includes('--check-db')) {
+  try {
+    const pool = await getPool();
+    const { recordset } = await pool.request().query('SELECT COUNT(*) AS n FROM dbo.InvoiceHd');
+    console.log(`[OK] Terhubung ke database ${process.env.DB_NAME || 'IBSFin'} di ${process.env.DB_SERVER || 'localhost'}: ${recordset[0].n} invoice.`);
+    process.exit(0);
+  } catch (err) {
+    console.error(`[X] Gagal terhubung ke database: ${err.message}`);
+    process.exit(1);
+  }
 }
 
 const app = express();

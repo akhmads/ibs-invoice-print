@@ -1,0 +1,35 @@
+INVOICE PRINT - PAKET WINDOWS
+=============================
+Tidak perlu install Node.js, npm, maupun koneksi internet.
+Semua yang dibutuhkan sudah ada di folder ini.
+
+PASANG
+1. Ekstrak zip ke C:\apps (hasilnya C:\apps\invoice-print).
+   Jangan jalankan dari Desktop / Downloads / langsung dari dalam zip.
+2. Klik kanan install.bat -> Run as administrator.
+3. Notepad terbuka berisi .env. Isi DB_SERVER, DB_USER, DB_PASSWORD,
+   lalu SIMPAN dan TUTUP Notepad.
+4. Tunggu sampai muncul "SELESAI".
+   Buka http://localhost:3003 di server, atau http://<IP-server>:3003 dari komputer lain.
+   Port diatur di Caddyfile (baris ":3003 {").
+
+Aplikasi terpasang sebagai 2 Windows service (lihat services.msc):
+  - Invoice Print          (aplikasi, internal di 127.0.0.1:3000)
+  - Invoice Print (Caddy)  (web server, port sesuai Caddyfile)
+Keduanya otomatis jalan saat server dinyalakan dan restart sendiri jika crash.
+
+JIKA ADA MASALAH
+- cek-database.bat : tes koneksi ke SQL Server.
+- Log ada di folder logs\
+- Port sudah dipakai program lain: ganti port di Caddyfile,
+  lalu jalankan install.bat lagi.
+- Ubah isi .env atau Caddyfile? Jalankan install.bat lagi (aman diulang).
+
+UPDATE KE VERSI BARU
+1. Klik kanan uninstall.bat -> Run as administrator.
+2. Ekstrak zip versi baru, timpa folder ini.
+   (.env tidak ikut tertimpa; config\company.js tertimpa, simpan dulu jika pernah diubah)
+3. Klik kanan install.bat -> Run as administrator.
+
+HAPUS
+- Klik kanan uninstall.bat -> Run as administrator, lalu hapus folder ini.

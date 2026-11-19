@@ -1,7 +1,7 @@
 # Pilih SALAH SATU blok di bawah.
 
-# --- A. Akses via IP / jaringan internal (tanpa domain, HTTP biasa) ---
-:80 {
+# --- A. Akses via IP / jaringan internal: http://<IP-server>:3003 ---
+:3003 {
 	encode gzip
 	reverse_proxy 127.0.0.1:3000
 
