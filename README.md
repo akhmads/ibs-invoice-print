@@ -51,7 +51,8 @@ Buka http://localhost:3000
 
 ## Deploy di Windows Server 2022
 
-1. Install **Node.js LTS** (.msi) dan download **Caddy** (`caddy_windows_amd64.exe`) ke `C:\caddy\caddy.exe`.
+1. Install **Node.js LTS** (.msi). Caddy v2.11.9 sudah tersedia di `deploy\caddy.exe`;
+   salin ke `C:\caddy\caddy.exe`.
 2. Salin folder ini ke mis. `C:\apps\invoice-print`, lalu di PowerShell:
    ```powershell
    cd C:\apps\invoice-print

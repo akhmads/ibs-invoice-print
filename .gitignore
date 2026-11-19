@@ -4,3 +4,6 @@ node_modules/
 
 # WinSW service wrapper (diunduh terpisah, lihat README)
 invoice-print-service.exe
+
+# Arsip unduhan (yang di-commit hanya hasil ekstraknya)
+deploy/*.zip
